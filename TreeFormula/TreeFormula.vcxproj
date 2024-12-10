@@ -134,12 +134,15 @@
     <ClCompile Include="TreeFormula.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Error.h" />
     <ClInclude Include="Messages.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NumberNode.h" />
     <ClInclude Include="OperatorNode.h" />
     <ClInclude Include="OperatorNodeFactory.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Result.h" />
+    <ClInclude Include="ResultFileSaver.h" />
     <ClInclude Include="StringOperations.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="UserInterface.h" />

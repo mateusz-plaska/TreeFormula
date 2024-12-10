@@ -1,4 +1,5 @@
 #include "Tree.h"
+#include "ResultFileSaver.h"
 
 #include <string>
 #include <map>
@@ -24,35 +25,33 @@ const OperatorsCreation& Tree::getOperatorsCreation() {
 	return operators;
 }
 
-string Tree::createTree(const string formula) {
+Result<Tree*, Error> Tree::createTree(const string formula) {
 	if (root) {
 		releaseTreeMemory();
-		root = nullptr;
-		variables.clear();
 	}
 	size_t offset = 0;
 	this->root = loadNode(formula, &offset);
 
-	if (offset < formula.length()) {
-		infoMessages << Messages::formatMessage(Messages::ERROR_EXTRA_ARGS,
-			{ {Messages::toReplaceText::pos, to_string(offset)} }) << endl;
+	if (offset < formula.length() && !(all_of(formula.begin() + offset, formula.end(), ::isspace))) {		
+		errors.push_back(new Error(Messages::formatMessage(Messages::ERROR_EXTRA_ARGS,
+			{ {Messages::toReplaceText::pos, to_string(offset)} })));
 	}
 
-	if (!infoMessages.str().empty()) {
-		infoMessages << endl << Messages::formatMessage(Messages::FINAL_FORMULA,
-			{ {Messages::toReplaceText::formula, this->toString()} }) << endl;
+	Result<Tree*, Error> result = Result<Tree*, Error>::ok(this);
+	if (!errors.empty()) {
+		result = Result<Tree*, Error>::okWithErrors(this, errors);
+		releaseErrors();
 	}
-
-	string errorMsg = infoMessages.str();
-	infoMessages.str(Messages::EMPTY_MSG);
-	return errorMsg;
+	createTreeLog(result, formula);
+	return result;
 }
 
-double Tree::computeValue(map<string, double> variablesValues) const {
-	double result = 0;
+Result<double, Error> Tree::computeValue(const map<string, double>& variablesValues) const {
+	Result<double, Error> result = Result<double, Error>::ok(0);
 	if (root) {
 		result = root->evaluate(variablesValues);
 	}
+	computeLog(result, variablesValues);
 	return result;
 }
 
@@ -61,6 +60,14 @@ string Tree::toString() const {
 		return Messages::EMPTY_MSG;
 	}
 	return root->toString();
+}
+
+Result<Tree*, Error> Tree::join(const std::string formula) {
+	joinLog();
+	Tree other;
+	Result<Tree*, Error> otherTreeResult = other.createTree(formula);
+	*this = *this + other;
+	return Result<Tree*, Error>::okWithErrors(this, otherTreeResult.getErrors());
 }
 
 Node* Tree::loadNode(const string formula, size_t* offset) {
@@ -89,25 +96,34 @@ Node* Tree::loadNode(const string formula, size_t* offset) {
 			}
 			else {
 				operatorNode->addChild(operatorNode->getDefaultChild());
-				infoMessages << Messages::formatMessage(Messages::ERROR_MISSING_ARGS,
-					{ {Messages::toReplaceText::operatorStr, operatorNode->getSymbol()}, 
-					{Messages::toReplaceText::position, to_string(*offset)} }) << endl;
+				errors.push_back(new Error(Messages::formatMessage(Messages::ERROR_MISSING_ARGS,
+					{ {Messages::toReplaceText::operatorStr, operatorNode->getSymbol()},
+					{Messages::toReplaceText::position, to_string(*offset)} })));
 			}
 		}
 
 		return operatorNode;
 	}
 	else if (all_of(characters.begin(), characters.end(), ::isdigit)) {
-		return new NumberNode(stoull(characters));
+		unsigned long long value = 1;
+		try {
+			value = stoull(characters);
+		}
+		catch (const exception& e) {
+			errors.push_back(new Error(Messages::formatMessage(Messages::ERROR_INVALID_VALUE,
+				{ {Messages::toReplaceText::valueStr, characters} })));
+		}
+
+		return new NumberNode(value);
 	}
 	else {
 		const size_t initialVariableLength = characters.length();
 		vector<pair<char, int>> errorCharsWithPos = StringOperations::removeIncorrectVariableChars(characters);
 
 		for (const pair<char, int> charAndPos : errorCharsWithPos) {
-			infoMessages << Messages::formatMessage(Messages::ERROR_INVALID_CHAR,
+			errors.push_back(new Error(Messages::formatMessage(Messages::ERROR_INVALID_CHAR,
 				{ {Messages::toReplaceText::charStr, Messages::EMPTY_MSG + charAndPos.first},
-				  {Messages::toReplaceText::pos, to_string((*offset) - initialVariableLength + charAndPos.second)} }) << endl;
+				  {Messages::toReplaceText::pos, to_string((*offset) - initialVariableLength + charAndPos.second)} })));
 		}
 
 
@@ -121,8 +137,8 @@ Node* Tree::loadNode(const string formula, size_t* offset) {
 			return variableNode;
 		}
 		else {
-			infoMessages << Messages::formatMessage(Messages::ERROR_MISSING_VAR_LETTER,
-				{ {Messages::toReplaceText::pos, to_string((*offset) - initialVariableLength) } }) << endl;
+			errors.push_back(new Error(Messages::formatMessage(Messages::ERROR_MISSING_VAR_LETTER,
+				{ {Messages::toReplaceText::pos, to_string((*offset) - initialVariableLength) } })));
 			return loadNode(formula, offset);
 		}
 	}
@@ -142,9 +158,9 @@ Tree* Tree::copyTree(const Tree& other) const {
 	return res;
 }
 
-VariableNode* Tree::findVariable(std::string variableName) const {
+VariableNode* Tree::findVariable(const std::string& variableName) const {
 	for (VariableNode* variableNode : variables) {
-		if (variableNode->getSymbol().find(variableName) != std::string::npos) {
+		if (variableNode->getSymbol() == variableName) {
 			return variableNode;
 		}
 	}
@@ -187,9 +203,7 @@ int Tree::countVariableOccurrences(Node* node, Node* variableNode) const {
 
 void Tree::deleteProperNode(Node* node) {
 	if (dynamic_cast<VariableNode*>(node)) {
-		int variableOccurences = countVariableOccurrences(this->root, node);
-		if (!(--variableOccurences)) {
-		//if (countVariableOccurrences(this->root, node) <= 1) {	
+		if (countVariableOccurrences(this->root, node) <= 1) {	
 			VariableNode* variableNodeToErase = findVariable(node->getSymbol());
 			auto it = variables.find(variableNodeToErase);
 			delete variableNodeToErase;
@@ -255,4 +269,41 @@ void Tree::bfs(vector<pair<Node*, int>>& queue, vector<vector<string>>& result) 
 	}
 
 	bfs(queue, result);
+}
+
+
+void Tree::createTreeLog(const Result<Tree*, Error>& result, const string& formula) const {
+	Result<void, Error> saveResult = FileSaver::saveStringToFile(FILE_NAME, Messages::Logs::CREATE_TREE + formula);
+	if (!saveResult.isSuccess()) {
+		ResultFileSaver<void>::saveAll(saveResult, FILE_NAME_ERROR);
+	}
+	
+	saveResult = ResultFileSaver<Tree*>::saveAll(result, FILE_NAME);
+	if (!saveResult.isSuccess()) {
+		ResultFileSaver<void>::saveAll(saveResult, FILE_NAME_ERROR);
+	}
+}
+
+void Tree::computeLog(const Result<double, Error>& result, const map<string, double>& variablesValues) const {	
+	string vars = Messages::EMPTY_MSG;
+	for (pair<string, double> variableWithValue : variablesValues) {
+		vars += variableWithValue.first + Messages::EQUAL_SIGN + to_string(variableWithValue.second) + Messages::SPACE_MSG;
+	}
+
+	Result<void, Error> saveResult = FileSaver::saveStringToFile(FILE_NAME, Messages::Logs::COMPUTE + this->toString() + Messages::Logs::VARS + vars);
+	if (!saveResult.isSuccess()) {
+		ResultFileSaver<void>::saveAll(saveResult, FILE_NAME_ERROR);
+	}
+
+	saveResult = ResultFileSaver<double>::saveAll(result, FILE_NAME);
+	if (!saveResult.isSuccess()) {
+		ResultFileSaver<void>::saveAll(saveResult, FILE_NAME_ERROR);
+	}
+}
+
+void Tree::joinLog() const {
+	Result<void, Error> saveResult = FileSaver::saveStringToFile(FILE_NAME, Messages::Logs::JOIN + this->toString() + "\n");
+	if (!saveResult.isSuccess()) {
+		ResultFileSaver<void>::saveAll(saveResult, FILE_NAME_ERROR);
+	}
 }

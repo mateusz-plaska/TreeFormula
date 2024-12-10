@@ -1,5 +1,7 @@
 #include "UserInterface.h"
 #include "Messages.h"
+#include "Error.h"
+#include "Result.h"
 
 
 #include <iostream>
@@ -66,8 +68,16 @@ void UserInterface::run() {
 }
 
 void UserInterface::handleEnter(const std::string& args) {
-	string errors = this->tree.createTree(args);
-	cout << endl << errors << endl;
+	Result<Tree*, Error> result = this->tree.createTree(args);
+
+	if (!result.isSuccess()) {
+		for (Error* error : result.getErrors()) {
+			cout << error->getErrorDescription() << endl;
+		}
+
+		cout << endl << Messages::formatMessage(Messages::FINAL_FORMULA,
+			{ {Messages::toReplaceText::formula, this->tree.toString()} }) << endl;
+	}
 }
 
 void UserInterface::handleVars(const std::string&) {
@@ -86,15 +96,32 @@ void UserInterface::handleComp(const std::string& args) {
 	string arg;
 	vector<double> values;
 	while ((argPrompt >> arg)) {
-		values.push_back(stod(arg));
+		double value;
+		try {
+			value = stod(arg);
+		}
+		catch (const std::exception& e) {
+			cout << endl << Messages::formatMessage(Messages::ERROR_INVALID_VALUE, 
+				{ {Messages::toReplaceText::valueStr, arg} }) << endl;
+			return;
+		}
+		values.push_back(value);
 	}
 
 	this->comp(values);
 }
 
 void UserInterface::handleJoin(const string& args) {
-	string errors = this->tree.join(args);
-	cout << endl << errors << endl;
+	Result<Tree*, Error> result = this->tree.join(args);
+
+	if (!result.isSuccess()) {
+		for (Error* error : result.getErrors()) {
+			cout << error->getErrorDescription() << endl;
+		}
+
+		cout << endl << Messages::formatMessage(Messages::FINAL_FORMULA,
+			{ {Messages::toReplaceText::formula, this->tree.toString()} }) << endl;
+	}
 }
 
 void UserInterface::handleTreeRows(const string&) {
@@ -127,5 +154,13 @@ void UserInterface::comp(const vector<double>& values) const {
 		variablesValues[var] = values[i++];
 	}
 
-	cout << this->tree.computeValue(variablesValues) << endl;
+	Result<double, Error> computeResult = this->tree.computeValue(variablesValues);
+
+	if (!computeResult.isSuccess()) {
+		for (Error* error : computeResult.getErrors()) {
+			cout << error->getErrorDescription() << endl;
+		}
+		return;
+	}
+	cout << computeResult.getValue() << endl;
 }

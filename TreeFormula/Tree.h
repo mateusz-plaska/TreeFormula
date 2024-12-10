@@ -7,6 +7,8 @@
 #include "VariableNode.h"
 #include "Messages.h"
 #include "StringOperations.h"
+#include "Error.h"
+#include "Result.h"
 
 #include <string>
 #include <map>
@@ -14,7 +16,8 @@
 #include <vector>
 #include <set>
 
-#include <iostream>
+const std::string FILE_NAME = "Tree.txt";
+const std::string FILE_NAME_ERROR = "Tree_WriteError.txt";
 
 using OperatorsCreation = std::map<const std::string, OperatorNode* (*)()>;
 
@@ -28,26 +31,21 @@ public:
 		releaseTreeMemory();
 	}
 
-	std::string createTree(const std::string formula);
+	Result<Tree*, Error> createTree(const std::string formula);
 	std::set<std::string> getVariableNames() const;
-	double computeValue(std::map<std::string, double> variablesValues) const;
+
+	Result<double, Error> computeValue(const std::map<std::string, double>& variablesValues) const;
 	std::string toString() const;
+	Result<Tree*, Error> join(const std::string formula);
 
 	void operator=(const Tree& other) {
 		releaseTreeMemory();
 		assignCopiedTree(other);
 	}
+
 	Tree operator+(const Tree& otherTree) const {
 		return this->mergeWithTree(otherTree);
 	}
-
-	std::string join(const std::string formula) {
-		Tree other;
-		std::string errorMsg = other.createTree(formula);
-		*this = *this + other;
-		return errorMsg;
-	}
-
 
 	std::vector<std::vector<std::string>> getTreeRows() const {
 		std::vector<std::vector<std::string>> result;
@@ -59,10 +57,9 @@ public:
 
 private:
 	Node* root;
-	std::ostringstream infoMessages;
 	std::set<VariableNode*> variables;
+	std::vector<Error*> errors;
 	static const OperatorsCreation operatorsCreation;
-
 
 	static const OperatorsCreation& getOperatorsCreation();
 
@@ -70,17 +67,28 @@ private:
 		Tree* copiedTree = copyTree(treeToCopy);
 		root = copiedTree->root;
 		variables = copiedTree->variables;
-		infoMessages.str(copiedTree->infoMessages.str());
+		errors = copiedTree->errors;
 	}
 	void releaseTreeMemory() {
 		delete root;
+		root = nullptr;
 		for (VariableNode* variable : variables) {
 			delete variable;
 		}
+		variables.clear();
+		releaseErrors();
 	}
+	void releaseErrors() {
+		for (Error* error : errors) {
+			delete error;
+		}
+		errors.clear();
+	}
+
 	Node* loadNode(const std::string formula, std::size_t* offset);
 	Tree* copyTree(const Tree& other) const;
-	VariableNode* findVariable(std::string variableName) const;
+
+	VariableNode* findVariable(const std::string& variableName) const;
 
 	Tree mergeWithTree(const Tree& other) const;
 	int countVariableOccurrences(Node* node, Node* variableNode) const;
@@ -89,5 +97,10 @@ private:
 	void replaceChildForParent(Node* currentParent, Node* oldChild, Node* newChild) const;
 
 	void bfs(std::vector<std::pair<Node*, int>>& queue, std::vector<std::vector<std::string>>& result) const;
+
+	
+	void createTreeLog(const Result<Tree*, Error>& result, const string& formula) const;
+	void computeLog(const Result<double, Error>& result, const map<string, double>& variablesValues) const;
+	void joinLog() const;
 };
 

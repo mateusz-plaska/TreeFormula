@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Result.h"
+#include "Error.h"
+#include "Messages.h"
+
 #include <map>
 #include<string>
 #include <sstream>
@@ -10,12 +14,12 @@ class Node {
 public:
 	virtual ~Node() {};
 
-	virtual double evaluate(const std::map<std::string, double>& variables) const = 0;
+	virtual Result<double, Error> evaluate(const std::map<std::string, double>& variables) const = 0;
 	virtual std::string getSymbol() const = 0;
 
 	virtual std::string toString() const {
 		std::ostringstream result;
-		result << getSymbol() << " ";
+		result << getSymbol() << Messages::SPACE_MSG;
 		return result.str();
 	}
 
