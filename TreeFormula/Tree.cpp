@@ -172,12 +172,18 @@ Tree Tree::mergeWithTree(const Tree& other) const {
 	if (!root) return other;
 	if (!other.root) return *this;
 
-	Tree result = *copyTree(*this);
+	Tree* copiedTree = copyTree(*this);
+	Tree result = move(*copiedTree);
+	delete copiedTree;
+
 	Node* leaf = findFirstLeaf(result.root);
 
 	if (result.root == leaf) {
 		delete leaf;
-		result = *copyTree(other);
+
+		Tree* copiedTree = copyTree(other);
+		result = move(*copiedTree);
+		delete copiedTree;
 	}
 	else {
 		result.deleteProperNode(leaf);

@@ -27,6 +27,15 @@ public:
 	Tree(const Tree& other) {
 		assignCopiedTree(other);
 	}
+	Tree(Tree&& other) noexcept {
+		root = other.root;
+		variables = other.variables;
+		errors = other.errors;
+
+		other.root = nullptr;
+		other.variables.clear();
+		other.errors.clear();
+	}
 	~Tree() {
 		releaseTreeMemory();
 	}
@@ -38,9 +47,27 @@ public:
 	std::string toString() const;
 	Result<Tree*, Error> join(const std::string formula);
 
-	void operator=(const Tree& other) {
-		releaseTreeMemory();
-		assignCopiedTree(other);
+	Tree operator=(Tree&& other) noexcept {
+		if (this != &other) {
+			releaseTreeMemory();
+
+			root = other.root;
+			variables = other.variables;
+			errors = other.errors;
+
+			other.root = nullptr;
+			other.variables.clear();
+			other.errors.clear();
+		}
+		return *this;
+	}
+
+	Tree operator=(const Tree& other) {
+		if (this != &other) {
+			releaseTreeMemory();
+			assignCopiedTree(other);
+		}
+		return *this;
 	}
 
 	Tree operator+(const Tree& otherTree) const {
@@ -70,12 +97,17 @@ private:
 		errors = copiedTree->errors;
 	}
 	void releaseTreeMemory() {
-		delete root;
-		root = nullptr;
+		if (!dynamic_cast<VariableNode*>(root)) {
+			delete root;
+		}
+
 		for (VariableNode* variable : variables) {
 			delete variable;
 		}
 		variables.clear();
+		
+		root = nullptr;
+
 		releaseErrors();
 	}
 	void releaseErrors() {

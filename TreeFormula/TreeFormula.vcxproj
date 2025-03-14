@@ -140,9 +140,11 @@
     <ClInclude Include="NumberNode.h" />
     <ClInclude Include="OperatorNode.h" />
     <ClInclude Include="OperatorNodeFactory.h" />
+    <ClInclude Include="RefCounter.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Result.h" />
     <ClInclude Include="ResultFileSaver.h" />
+    <ClInclude Include="SharedSmartPointer.h" />
     <ClInclude Include="StringOperations.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="UserInterface.h" />

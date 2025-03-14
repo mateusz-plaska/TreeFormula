@@ -1,66 +1,165 @@
-Utworzono drzewo z formuly: + * a * 2 1 b
-+ * a * 2 1 b 
-Obliczanie wartosci dla drzewa: + * a * 2 1 b Zmienne: a=5.000000 b=9.000000 
-19
-
-Join do drzewa: + * a * 2 1 b Utworzono drzewo z formuly: + a * c - b 2
-+ a * c - b 2 
-Utworzono drzewo z formuly: + * a * 2 1 b 
-+ * a * 2 1 b 
-Utworzono drzewo z formuly: + * a * 2 1 b 
-+ * a * 2 1 b 
-Utworzono drzewo z formuly: + * + a * c - b 2 * 2 1 b 
-+ * + a * c - b 2 * 2 1 b 
-Utworzono drzewo z formuly: + * + a * c - b 2 * 2 1 b 
-+ * + a * c - b 2 * 2 1 b 
-Utworzono drzewo z formuly: + a b
+Tworzone drzewo z formuly: + a b
 + a b 
 Join do drzewa: + a b 
-Utworzono drzewo z formuly: * 2 1
+Tworzone drzewo z formuly: * 2 1
 * 2 1 
-Utworzono drzewo z formuly: + a b 
+Tworzone drzewo z formuly: + a b 
 + a b 
-Utworzono drzewo z formuly: + a b 
+Tworzone drzewo z formuly: + a b 
 + a b 
-Utworzono drzewo z formuly: + * 2 1 b 
+Tworzone drzewo z formuly: + * 2 1 b 
 + * 2 1 b 
-Utworzono drzewo z formuly: + * 2 1 b 
+Tworzone drzewo z formuly: + * 2 1 b 
 + * 2 1 b 
-Utworzono drzewo z formuly: + a b
+Tworzone drzewo z formuly: + * 2 1 b 
++ * 2 1 b 
+
+//PRZENIESIENIE
+Tworzone drzewo z formuly: + a b
 + a b 
 Join do drzewa: + a b 
-Utworzono drzewo z formuly: * 2 1
+Tworzone drzewo z formuly: * 2 1
 * 2 1 
-Utworzono drzewo z formuly: + a b 
+Tworzone drzewo z formuly: + a b 
 + a b 
-Utworzono drzewo z formuly: + a b 
+Tworzone drzewo z formuly: + a b 
 + a b 
-Utworzono drzewo z formuly: + * 2 1 b 
+Tworzone drzewo z formuly: + * 2 1 b 
 + * 2 1 b 
-Utworzono drzewo z formuly: + * 2 1 b 
+
+
+
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + * 2 1 b 
 + * 2 1 b 
-Utworzono drzewo z formuly: + a * b 2Tworzone drzewo z formuly: + 5 / a -23
-W nazwie zmniennej niedozwolony znak '-' na pozycji 8. Zostanie zignorowany.
-Nazwa zmiennej na pozycji 8 nie ma zadnej litery. Zmienna zostanie zignorowana.
-Brakuje argumentu dla operatora '/' na pozycji 11. Naprawiono wstawiajac domyslny argument.
-+ 5 / a 1 
-Tworzone drzewo z formuly: + 5 / a b
-+ 5 / a b 
-Obliczanie wartosci dla drzewa: + 5 / a b Zmienne: a=24.000000 b=-23.000000 
-3.95652
 
-Tworzone drzewo z formuly: + 5 / a b
-+ 5 / a b 
-Obliczanie wartosci dla drzewa: + 5 / a b Zmienne: a=24.000000 b=23.000000 
-6.04348
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + * 2 1 b 
++ * 2 1 b 
 
-Obliczanie wartosci dla drzewa: + 5 / a b Zmienne: a=24.000000 b=-23.000000 
-Blad: Dzielenie przez ujemna liczbe (niedozwolone)
-0
 
-Tworzone drzewo z formuly: / 5 - 2 4
-/ 5 - 2 4 
-Obliczanie wartosci dla drzewa: / 5 - 2 4 Zmienne: 
-Blad: Dzielenie przez ujemna liczbe (niedozwolone)
-0
+
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + * 2 1 b 
++ * 2 1 b 
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + * 2 1 b 
++ * 2 1 b 
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+
+Tworzone drzewo z formuly: + a b
++ a b 
+Join do drzewa: + a b 
+Tworzone drzewo z formuly: * 2 1
+* 2 1 
+Tworzone drzewo z formuly: + a b 
++ a b 
+Tworzone drzewo z formuly: + * 2 1 b 
++ * 2 1 b 
+
+Tworzone drzewo z formuly: + + a * 2 1 b
++ + a * 2 1 b 
+Join do drzewa: + + a * 2 1 b 
+Tworzone drzewo z formuly: + a * c - b + 4 x
++ a * c - b + 4 x 
+Tworzone drzewo z formuly: + + a * 2 1 b 
++ + a * 2 1 b 
+Tworzone drzewo z formuly: + + + a * c - b + 4 x * 2 1 b 
++ + + a * c - b + 4 x * 2 1 b 
+Obliczanie wartosci dla drzewa: + + + a * c - b + 4 x * 2 1 b Zmienne: a=5.000000 b=2.000000 c=18.000000 x=11.000000 
+-225
+
+Tworzone drzewo z formuly: a + b 
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: a b +
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: + a b
++ a b 
+Obliczanie wartosci dla drzewa: + a b Zmienne: a=5.000000 b=2.000000 
+7
+
+Tworzone drzewo z formuly: + a b
++ a b 
+Tworzone drzewo z formuly: a b + 8 - /
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: a + b
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: + a b
++ a b 
+Tworzone drzewo z formuly: a b +
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: + a b
++ a b 
+Tworzone drzewo z formuly: a b + 8 / - 5
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+a 
+Tworzone drzewo z formuly: + a b / 8 - c
+Nadmiarowe argumenty w formule od pozycji 5. Nie zostaly wczytane.
++ a b 
+Tworzone drzewo z formuly: + 62 / 8 - a b
++ 62 / 8 - a b 
+Obliczanie wartosci dla drzewa: + 62 / 8 - a b Zmienne: a=5.000000 b=2.000000 
+64.6667
+
+Join do drzewa: + 62 / 8 - a b 
+Tworzone drzewo z formuly: 5 + a
+Nadmiarowe argumenty w formule od pozycji 1. Nie zostaly wczytane.
+5 
+Tworzone drzewo z formuly: + 62 / 8 - a b 
++ 62 / 8 - a b 
+Tworzone drzewo z formuly: + 5 / 8 - a b 
++ 5 / 8 - a b 
+Join do drzewa: + 5 / 8 - a b 
+Tworzone drzewo z formuly: + a - b * 5 2
++ a - b * 5 2 
+Tworzone drzewo z formuly: + 5 / 8 - a b 
++ 5 / 8 - a b 
+Tworzone drzewo z formuly: + + a - b * 5 2 / 8 - a b 
++ + a - b * 5 2 / 8 - a b 
+Obliczanie wartosci dla drzewa: + + a - b * 5 2 / 8 - a b Zmienne: a=5.000000 b=2.000000 
+-0.333333
 
